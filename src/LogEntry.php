@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Prestiter\Logger;
+namespace Logstitch;
 
 /**
  * Value object representing a single log event.

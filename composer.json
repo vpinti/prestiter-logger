@@ -1,5 +1,5 @@
 {
-    "name": "prestiter/logger",
+    "name": "logstitch/logstitch",
     "description": "A structured logging library agnostic from the destination SaaS",
     "type": "library",
     "license": "MIT",
@@ -22,13 +22,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Prestiter\\Logger\\": "src/"
+            "Logstitch\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Prestiter\\Logger\\Tests\\": "tests/"
+            "Logstitch\\Tests\\": "tests/"
         }
+    },
+    "suggest": {
+        "ext-sockets": "Required for DGRAM transport to /dev/log (recommended for standard rsyslog)"
     },
     "minimum-stability": "stable",
     "config": {

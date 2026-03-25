@@ -1,6 +1,6 @@
-# Prestiter Logger
+# Logstitch
 
-[![CI](https://github.com/Carmati-CRM/prestiter-logger/actions/workflows/ci.yml/badge.svg)](https://github.com/Carmati-CRM/prestiter-logger/actions/workflows/ci.yml)
+[![CI](https://github.com/Carmati-CRM/logstitch/actions/workflows/ci.yml/badge.svg)](https://github.com/Carmati-CRM/logstitch/actions/workflows/ci.yml)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-8892BF)](composer.json)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -10,6 +10,7 @@ A structured logging library for PHP that is agnostic from the destination SaaS.
 
 - PHP >= 7.4
 - cURL extension (for NewRelicDriver)
+- `ext-sockets` (optional, recommended for SyslogDriver DGRAM transport)
 
 ## Installation
 
@@ -20,11 +21,11 @@ Add the repository to your `composer.json`:
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/Carmati-CRM/prestiter-logger"
+            "url": "https://github.com/Carmati-CRM/logstitch"
         }
     ],
     "require": {
-        "prestiter/logger": "dev-main"
+        "logstitch/logstitch": "dev-main"
     }
 }
 ```
@@ -42,10 +43,10 @@ composer update
 ```php
 <?php
 
-use Prestiter\Logger\Logger;
-use Prestiter\Logger\LogEntry;
-use Prestiter\Logger\Driver\NewRelicDriver;
-use Prestiter\Logger\Driver\FileDriver;
+use Logstitch\Logger;
+use Logstitch\LogEntry;
+use Logstitch\Driver\NewRelicDriver;
+use Logstitch\Driver\FileDriver;
 
 // Create drivers
 $newRelicDriver = new NewRelicDriver('your-new-relic-api-key');
@@ -96,7 +97,7 @@ $logger->log($entry);
 ```php
 <?php
 
-use Prestiter\Logger\LogEntry;
+use Logstitch\LogEntry;
 
 $entry = new LogEntry(
     LogEntry::LEVEL_WARN,
@@ -130,8 +131,8 @@ Use `NullDriver` in test environments:
 ```php
 <?php
 
-use Prestiter\Logger\Logger;
-use Prestiter\Logger\Driver\NullDriver;
+use Logstitch\Logger;
+use Logstitch\Driver\NullDriver;
 
 $logger = new Logger([new NullDriver()]);
 
@@ -162,6 +163,63 @@ Writes logs to a file in JSON Lines format (one JSON object per line).
 
 ```php
 $driver = new FileDriver('/path/to/logs/app.log');
+```
+
+### SyslogDriver
+
+Sends logs to a local rsyslog via Unix socket in **RFC 5424** format, with the full JSON payload in the MSG field. rsyslog can then forward to an external syslog-ng server or any other destination.
+
+Transport chain (first that succeeds wins):
+1. **DGRAM** via `ext-sockets` — standard `/dev/log` on Linux with rsyslog
+2. **STREAM** via `stream_socket_client` — systemd-managed socket (SEQPACKET)
+3. **Silent failure** — `error_log()` warning, no exception thrown
+
+The driver does not write a file fallback on its own. Use the `Logger` fan-out to compose a `FileDriver` alongside it if double-write resilience is needed (see examples below).
+
+```php
+use Logstitch\Driver\SyslogDriver;
+
+// Minimal: app name only, defaults to /dev/log
+$driver = new SyslogDriver('my-app');
+
+// Explicit socket path
+$driver = new SyslogDriver('my-app', '/dev/log');
+
+echo $driver->getSocketPath(); // /dev/log
+```
+
+**Fan-out examples** — the consumer decides the strategy:
+
+```php
+use Logstitch\Logger;
+use Logstitch\Driver\SyslogDriver;
+use Logstitch\Driver\FileDriver;
+
+// rsyslog only — trust rsyslog reliability
+$logger = new Logger([new SyslogDriver('my-app')]);
+
+// File only — external server reads the directory
+$logger = new Logger([new FileDriver('/var/log/my-app/prestiter.log')]);
+
+// Always write to both (maximum resilience, consumer's choice)
+$logger = new Logger([
+    new SyslogDriver('my-app'),
+    new FileDriver('/var/log/my-app/prestiter.log'),
+]);
+```
+
+The RFC 5424 message format produced:
+
+```
+<PRI>1 TIMESTAMP HOSTNAME APP-NAME PID MSGID - {"timestamp":...,"level":"INFO",...}
+```
+
+Where `PRI = (LOCAL0_facility << 3) | severity` (e.g. `<134>` for INFO).
+
+Verify on the receiving server:
+
+```bash
+sudo tail -f /var/log/syslog
 ```
 
 ### NullDriver

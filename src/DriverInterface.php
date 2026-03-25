@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Prestiter\Logger;
+namespace Logstitch;
 
 /**
  * Interface for log drivers.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Prestiter\Logger;
+namespace Logstitch;
 
 use Throwable;
 
@@ -32,7 +32,7 @@ final class Logger
                 $driver->send($entry);
             } catch (Throwable $e) {
                 // Silently ignore driver exceptions to ensure logging never breaks the application
-                error_log('[PrestiterLogger] Driver exception: ' . $e->getMessage());
+                error_log('[Logstitch] Driver exception: ' . $e->getMessage());
             }
         }
     }

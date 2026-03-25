@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Prestiter\Logger\Driver;
+namespace Logstitch\Driver;
 
-use Prestiter\Logger\DriverInterface;
-use Prestiter\Logger\LogEntry;
+use Logstitch\DriverInterface;
+use Logstitch\LogEntry;
 
 /**
  * Null driver that does nothing.

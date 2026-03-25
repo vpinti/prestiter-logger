@@ -1,6 +1,6 @@
-# Contributing to Prestiter Logger
+# Contributing to Logstitch
 
-Thank you for considering contributing to Prestiter Logger!
+Thank you for considering contributing to Logstitch!
 
 ## How to Contribute
 
@@ -25,8 +25,8 @@ Feature suggestions are welcome. Please use the feature request template and pro
 ## Development Setup
 
 ```bash
-git clone https://github.com/Carmati-CRM/prestiter-logger.git
-cd prestiter-logger
+git clone https://github.com/Carmati-CRM/logstitch.git
+cd logstitch
 composer install
 ```
 

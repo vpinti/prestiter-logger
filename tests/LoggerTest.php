@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Prestiter\Logger\Tests;
+namespace Logstitch\Tests;
 
+use Logstitch\DriverInterface;
+use Logstitch\LogEntry;
+use Logstitch\Logger;
 use PHPUnit\Framework\TestCase;
-use Prestiter\Logger\DriverInterface;
-use Prestiter\Logger\LogEntry;
-use Prestiter\Logger\Logger;
 use RuntimeException;
 
 final class LoggerTest extends TestCase

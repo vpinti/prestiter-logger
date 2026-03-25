@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Prestiter\Logger\Driver;
+namespace Logstitch\Driver;
 
-use Prestiter\Logger\DriverInterface;
-use Prestiter\Logger\LogEntry;
+use Logstitch\DriverInterface;
+use Logstitch\LogEntry;
 use Throwable;
 
 /**
@@ -31,7 +31,7 @@ final class NewRelicDriver implements DriverInterface
                 [
                     'common' => [
                         'attributes' => [
-                            'logtype' => 'prestiter-logger',
+                            'logtype' => 'logstitch',
                             'environment' => $entry->getEnvironment(),
                         ],
                     ],
@@ -44,7 +44,7 @@ final class NewRelicDriver implements DriverInterface
             $ch = curl_init(self::ENDPOINT);
 
             if ($ch === false) {
-                error_log('[PrestiterLogger] Failed to initialize cURL');
+                error_log('[Logstitch] Failed to initialize cURL');
 
                 return;
             }
@@ -69,16 +69,16 @@ final class NewRelicDriver implements DriverInterface
             curl_close($ch);
 
             if ($response === false || $curlError !== '') {
-                error_log('[PrestiterLogger] cURL error: ' . $curlError);
+                error_log('[Logstitch] cURL error: ' . $curlError);
 
                 return;
             }
 
             if ($httpCode !== 202) {
-                error_log('[PrestiterLogger] New Relic API returned HTTP ' . (string) $httpCode . ': ' . $response);
+                error_log('[Logstitch] New Relic API returned HTTP ' . (string) $httpCode . ': ' . $response);
             }
         } catch (Throwable $e) {
-            error_log('[PrestiterLogger] Exception: ' . $e->getMessage());
+            error_log('[Logstitch] Exception: ' . $e->getMessage());
         }
     }
 }

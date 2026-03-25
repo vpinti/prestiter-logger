@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Prestiter\Logger\Tests\Driver;
+namespace Logstitch\Tests\Driver;
 
+use Logstitch\Driver\FileDriver;
+use Logstitch\LogEntry;
 use PHPUnit\Framework\TestCase;
-use Prestiter\Logger\Driver\FileDriver;
-use Prestiter\Logger\LogEntry;
 
 final class FileDriverTest extends TestCase
 {

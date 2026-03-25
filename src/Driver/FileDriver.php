@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Prestiter\Logger\Driver;
+namespace Logstitch\Driver;
 
-use Prestiter\Logger\DriverInterface;
-use Prestiter\Logger\LogEntry;
+use Logstitch\DriverInterface;
+use Logstitch\LogEntry;
 use Throwable;
 
 /**
@@ -32,10 +32,10 @@ final class FileDriver implements DriverInterface
             );
 
             if ($result === false) {
-                error_log('[PrestiterLogger] Failed to write to file: ' . $this->filePath);
+                error_log('[Logstitch] Failed to write to file: ' . $this->filePath);
             }
         } catch (Throwable $e) {
-            error_log('[PrestiterLogger] Exception writing to file: ' . $e->getMessage());
+            error_log('[Logstitch] Exception writing to file: ' . $e->getMessage());
         }
     }
 

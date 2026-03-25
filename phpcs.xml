@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="Prestiter Logger Coding Standard">
-    <description>Coding standard for Prestiter Logger library</description>
+<ruleset name="Logstitch Coding Standard">
+    <description>Coding standard for Logstitch library</description>
 
     <!-- Paths to check -->
     <file>src</file>
